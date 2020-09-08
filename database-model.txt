@@ -1,0 +1,274 @@
+Table TB_PERMISSAO_MA as PER {
+	ID                 bigint [pk, increment]
+	NOME               varchar(256)
+	VERSAO             bigint [not null]
+}
+
+Table TB_PAPEL_PERMISSAO_MA as PPER {
+	ID                 bigint [pk, increment]
+	VERSAO             bigint [not null]
+	ID_PAPEL           bigint [not null]
+	ID_PERMISSAO           bigint [not null]
+}
+
+Ref: PPER.ID_PAPEL < PAP.ID
+Ref: PPER.ID_PERMISSAO < PER.ID
+
+Table TB_PAPEL_MA as PAP {
+	ID                 bigint [pk, increment]
+	NOME               varchar(256)
+	VERSAO             bigint [not null]
+}
+
+Ref: PAP.ID < U.ID_PAPEL
+
+Table TB_USUARIO_MA as U {
+	ID                 bigint [pk, increment]
+	NOME               varchar(256) 
+	CPF                varchar(16) 
+	PERFIL             varchar(32) 
+	EMAIL              varchar(128)
+	TELEFONE           varchar(16)
+	PERMISSOES         varchar(1024) 
+	SENHA              varchar(256) 
+	ATIVO              boolean 
+	VERSAO             bigint [not null]
+	ID_PAPEL           bigint [not null]
+}
+
+Table TB_ABRANGENCIA_MA as B {
+	ID                 bigint [pk, increment]
+	ANO                int 
+	ESTADO             varchar(2)
+	CODIGO             int 
+	MUNICIPIO          varchar(128)
+	TERMO              boolean 
+	VERSAO             bigint [not null]
+	ID_USUARIO         bigint [not null]
+}
+
+Ref: U.ID < B.ID_USUARIO
+
+Table TB_AREA_MA as A {
+	ID                 bigint [pk, increment]
+	ESTADO             varchar(2)
+	CODIGO             int
+	MUNICIPIO          varchar(128)
+	BAIRRO             varchar(128)
+	VERSAO             bigint [not null]
+}
+
+Table TB_MUNICIPIO_MA as M {
+	ID                 bigint [pk, increment]
+	ESTADO             varchar(2)
+	CODIGO             int
+	NOME               varchar(128)
+	VERSAO             bigint [not null]
+}
+
+Table TB_VIZINHO_MA as V {
+	ID                 bigint [pk, increment]
+	ESTADO             varchar(2)
+	CODIGO             int
+	NOME               varchar(128)
+	VERSAO             bigint [not null]
+	ID_MUNICIPIO       bigint
+}
+
+Ref: M.ID < V.ID_MUNICIPIO
+
+Table TB_ZONA_MA as Z {
+	ID                 bigint [pk, increment]
+	ANO                int [not null]
+	NOME               varchar(128) [not null]
+	VERSAO             bigint [not null]
+}
+
+Table TB_ZONA_AREA_MA as ZA {
+	ID                 bigint [pk, increment]
+	CODIGO             int
+	MUNICIPIO          varchar(128)
+	BAIRRO             varchar(128)
+	VERSAO             bigint [not null]
+	ID_ZONA            bigint [not null]
+}
+
+Ref: Z.ID < ZA.ID_ZONA
+
+Table TB_INSCRITO_MA as I {
+	ID                 bigint [pk, increment]
+	NOME               varchar(256)
+	CPF                varchar(16)
+	RG                 varchar(16)
+	SEXO               varchar(16)
+	NASCIMENTO         timestamp
+	PAIS_NASCIMENTO    varchar(64)
+	ESTADO_NASCIMENTO  varchar(64)
+	CIDADE_NASCIMENTO  varchar(128)
+	REDE_ORIGEM        varchar(16)
+	EMAIL              varchar(128)
+	CELULAR            varchar(16)
+	TELEFONE           varchar(16)
+	NIVEL_SIMADE       bigint
+	NIVEL_DESCRICAO    varchar(32)
+	ETAPA_SIMADE       bigint
+	ETAPA_DESCRICAO    varchar(32)
+	INSCRICAO          varchar(16)
+	VERSAO             bigint [not null]
+}
+
+Table TB_INSCRITO_ENDERECO_MA as IE {
+	ID                 bigint [pk, increment]
+	CEP                varchar(16)
+	ESTADO             varchar(2)
+	CODIGO             int
+	MUNICIPIO          varchar(128)
+	BAIRRO             varchar(128)
+	LOGRADOURO         varchar(128)
+	NUMERO             varchar(16)
+	COMPLEMENTO        varchar(32)
+	LATITUDE           numeric(8)
+	LONGITUDE          numeric(8)
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - IE.ID_INSCRITO
+
+Table TB_INSCRITO_CERTIDAO_MA as IC {
+	ID                 bigint [pk, increment]
+	TIPO               varchar(16)
+	TERMO              varchar(64)
+	LIVRO              varchar(32)
+	FOLHA              varchar(32)
+	CARTORIO           varchar(256)
+	MATRICULA          varchar(256)
+	ESTADO             varchar(64)
+	MUNICIPIO          varchar(128)
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - IC.ID_INSCRITO
+
+Table TB_INSCRITO_DEFICIENCIA_MA as ID {
+	ID                 bigint [pk, increment]
+	ID_SIMADE          varchar(16)
+	DESCRICAO          varchar(64)
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - ID.ID_INSCRITO
+
+Table TB_INSCRITO_FILIACAO_MA as IF {
+	ID                 bigint [pk, increment]
+	SEQUENCIAL         int
+	NOME               varchar(256)
+	CPF                varchar(16)
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - IF.ID_INSCRITO
+
+Table TB_INSCRITO_RESPONSAVEL_MA as IR {
+	ID                 bigint [pk, increment]
+	TIPO               varchar(16)
+	NOME               varchar(256)
+	CPF                varchar(16)
+	EMAIL              varchar(128)
+	CELULAR            varchar(16)
+	TELEFONE           varchar(16)
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - IR.ID_INSCRITO
+
+Table TB_OPCAO_MA as O {
+	ID                 bigint [pk, increment]
+	SEQUENCIAL         int
+	CODIGO_CENSO       bigint
+	ID_ENDERECO_PREDIO bigint
+	ENSINO_SIMADE      bigint
+	ENSINO_DESCRICAO   varchar(32)
+	CURSO_SIMADE       bigint
+	CURSO_DESCRICAO    varchar(128)
+	TURNO_SIMADE       bigint
+	TURNO_DESCRICAO    varchar(16)
+	ALOCADO            timestamp
+	CONFIRMADO         timestamp
+	VERSAO             bigint [not null]
+	ID_INSCRITO        bigint [not null]
+}
+
+Ref: I.ID - O.ID_INSCRITO
+
+Table TB_RESTRICAO_MA as R {
+	ID                 bigint [pk, increment]
+	NIVEL_SIMADE       bigint
+	NIVEL_DESCRICAO    varchar(32)
+	ETAPA_SIMADE       bigint
+	ETAPA_DESCRICAO    varchar(32)
+	ENSINO_SIMADE      bigint
+	ENSINO_DESCRICAO   varchar(32)
+	IDADE_MINIMA       int
+	IDADE_MAXIMA       int
+	VERSAO             bigint [not null]
+}
+
+Table TB_ESCOLA_MA as S {
+	ID                 bigint [pk, increment]
+	TIPO               varchar(16)
+	NOME               varchar(256)
+	CODIGO_CENSO       bigint
+	ID_ENDERECO_PREDIO bigint
+	VERSAO             bigint [not null]
+}
+
+Table TB_ENCAMINHAMENTO_MA as AE {
+	ID                 bigint
+	PRIORIDADE         int
+	NOME_ESCOLA        varchar(256)
+	CODIGO_CENSO       bigint
+	ID_ENDERECO_PREDIO bigint
+	ID_ZONA_AREA       bigint
+	VERSAO             bigint
+}
+
+Ref: ZA.ID < AE.ID_ZONA_AREA
+
+Table TB_ESCOLA_ENDERECO_MA as SE {
+	ID                 bigint [pk, increment]
+	ESTADO             varchar(2)
+	CODIGO             int
+	MUNICIPIO          varchar(128)
+	BAIRRO             varchar(128)
+	LOGRADOURO         varchar(128)
+	NUMERO             varchar(16)
+	COMPLEMENTO        varchar(32)
+	VERSAO             bigint [not null]
+	ID_ESCOLA          bigint [not null]
+}
+
+Ref: S.ID - SE.ID_ESCOLA
+
+Table TB_VAGA_MA as SV {
+	ID                 bigint [pk, increment]
+	ID_NIVEL          bigint 
+	NIVEL              varchar(32)
+	ID_ETAPA          bigint 
+	ETAPA              varchar(32)
+	ID_ENSINO          bigint 
+	ENSINO             varchar(32)
+	ID_CURSO          bigint 
+	CURSO              varchar(128)
+	ID_TURNO          bigint 
+	TURNO              varchar(16)
+	QUANTIDADE         int
+	VERSAO             bigint [not null]
+	ID_ESCOLA          bigint [not null]
+}
+
+Ref: S.ID < SV.ID_ESCOLA
